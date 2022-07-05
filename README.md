@@ -1,10 +1,11 @@
 A `TypeScript` library, containing some very useful and advanced types for general purpose. Such as object manipulation with high inference.
 
-*Disclaimer 1*: This documentation is the same from my other library `trentim-react-sdk` on Storybook, which uses this library.
-*Disclaimer 2*: The documentation for the types `SetValuesByPath`, `SetValuesByPath` and `Leaves` is not available yet.
-*Disclaimer 3*: To use this types, TypeScript version should at least be at version `4.3`
+**Notes**:
+- This documentation is the same from my other library `trentim-react-sdk` on Storybook, which uses this library.
+-  The documentation for the types `SetValuesByPath`, `SetValuesByPath` and `Leaves` is not available yet.
+- To use this types, TypeScript version should at least be at version `4.3`
 
-## Available types
+## Guide:
 
 We provide a few set of utility types that can be used to make your coding experience easier. 
 
@@ -124,3 +125,8 @@ Documentation not written yet.
 
 #### SetValuesByPath
 Documentation not written yet.
+
+##### Thanks to:
+- [How to remove index signature using mapped types](https://stackoverflow.com/questions/51465182/how-to-remove-index-signature-using-mapped-types)
+- [Typescript: deep keyof of a nested object](https://stackoverflow.com/questions/58434389/typescript-deep-keyof-of-a-nested-object)
+- Official TypeScript team.
