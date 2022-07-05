@@ -5,10 +5,11 @@ A `TypeScript` library, containing some very useful and advanced types for gener
 -  The documentation for the types `SetValuesByPath`, `SetValuesByPath` and `Leaves` is not available yet.
 - To use this types, TypeScript version should at least be at version `4.3`
 
+
+##### Installation:
+
+`npm install bakutils-types --save` or `yarn add bakutils-types`.
 ## Guide:
-
-We provide a few set of utility types that can be used to make your coding experience easier. 
-
 #### RemoveIndex:
 
 The `RemoveIndex` type can be used to remove any index key inside an interface or type definition.
