@@ -8,7 +8,7 @@ A `TypeScript` library, containing some very useful and advanced types for gener
 
 ##### Installation:
 
-`npm install bakutils-types --save` or `yarn add bakutils-types`.
+`npm install --save bakutils-types` or `yarn add bakutils-types`.
 ## Guide:
 #### RemoveIndex:
 
