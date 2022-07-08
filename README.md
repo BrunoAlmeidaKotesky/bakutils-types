@@ -2,13 +2,25 @@ A `TypeScript` library, containing some very useful and advanced types for gener
 
 **Notes**:
 - This documentation is the same from my other library `trentim-react-sdk` on Storybook, which uses this library.
--  The documentation for the types `SetValuesByPath`, `SetValuesByPath` and `Leaves` is not available yet.
-- To use this types, TypeScript version should at least be at version `4.3`
+-  The documentation for the types `SetValuesByPath`, `SetValuesByPath` is not available yet.
+- To use this types, TypeScript version should at least be at version `4.2`
 
 
 ##### Installation:
 
 `npm install --save bakutils-types` or `yarn add bakutils-types`.
+
+##### Available types:
+- [RemoveIndex](#removeindex)
+- [Join](#join)
+- [Paths](#paths)
+- [TypeFrom](#typefrom)
+- [Split](#split)
+- [FunctionsFrom](#functionsfrom)
+- [Leaves](#leaves)
+- [SetValueByPath](#setvaluebypath)
+- [SetValuesByPath](#setvaluesbypath)
+
 ## Guide:
 #### RemoveIndex:
 
@@ -30,7 +42,7 @@ let valid: WithoutDynamicKey = {Id: 2};
 #### Join:
 
 On the most basic level, the `Join` type basically just join two string types together.
-But this type is very useful when used on more advanced scenarios, like when using recursively on anothers types, such as `Paths` and `Leaves` type.
+But this type is very useful when used on more advanced scenarios, like when using recursively on another types, such as `Paths` and `Leaves` type.
 
 *Example:*
 ```ts dark
@@ -65,8 +77,25 @@ Generally, you can use 4 (or more) as the default value. It only becomes a probl
 type ExamplePaths = Paths<IExample, 4>; // "data" | "data.id" | "data.userInfo" | "data.userInfo.name" | "data.userInfo.address" | "data.userInfo.address.street" | "data.userInfo.address.city"
 ```
 
-You can see more use cases of this type especially in the previously mentioned methods above.
+#### Leaves
+This type is just like [Paths](#paths) type, but it does not point to object types itself, only properties inside of them.
 
+```ts dark
+interface IExample {
+    data: {
+        id: number;
+        userInfo: {
+            name: string;
+            address: {
+                street: string;
+                city: string;
+            }
+        }
+    }
+}
+type ExLeaves = Leaves<IExample> /* "data.id" | "data.userInfo.name" | 
+"data.userInfo.address.street" | "data.userInfo.address.city"*/
+```
 
 #### TypeFrom:
 
@@ -117,8 +146,26 @@ type UnknownType = TypeFrom<IExample, 'data.userInfo.propertyDoesNotExist'>;
 */
 ```
 
-#### Leaves
-Documentation not written yet.
+#### Split
+Use this type to split strings into an array of strings, using the given separator.
+
+*Example:*
+```ts dark
+type MyType = Split<"a.b.c", ".">; // ["a", "b", "c"]
+```
+
+#### FunctionsFrom
+This type can be used to extract all the functions from an interface or type definition (or inferred type from an object), excluding all the properties that are not functions.
+
+*Example:*
+```ts dark
+interface IExample {
+  a: () => void;
+  b: (a: number) => void;
+  c: number;
+}
+type Example = FunctionsFrom<IExample>; // {a: () => void, b: (a: number) => void}
+```
 
 #### SetValueByPath
 Documentation not written yet.
