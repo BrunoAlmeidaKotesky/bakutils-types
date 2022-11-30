@@ -130,8 +130,10 @@ export type TypeFrom<T, Path extends string = Paths<T, 4>> =
     Path extends `${infer K}.${infer R}` ? K extends keyof T ? TypeFrom<T[K], R> : unknown :
     unknown;
 
+/**
+ * This type can be used on functions that deeply access and modify an object value, given it's path.
+ */
 export type SetValueByPath<ReturnValue, Obj extends Record<any, any>> = <T = Obj, Path extends string = Paths<T, 4>> (path: Path, value: TypeFrom<T, Path>, fromObject?: Obj) => ReturnValue;
-export type SetValuesByPath<ReturnValue, Obj extends Record<any, any>> = <T = Obj, Path extends string = Paths<T, 4>> (keyValues: Array<{ key: Path, value: TypeFrom<T, Path> }>, fromObject?: Obj) => ReturnValue;
 
 /**
  * Use this type to split strings into an array of strings, using the given separator.
@@ -159,3 +161,32 @@ export type Split<Str extends string, By extends string> =
  * ```
  */
 export type FunctionsFrom<T> = { [P in keyof T as T[P] extends Function ? P : never]: T[P] };
+/**
+ * This type can be used to extract all the properties from an interface or type definition (or inferred type from an object), excluding all the properties that are functions.
+ * 
+ * @example
+ * ```ts
+ * interface IExample {
+ *   a: () => void;
+ *   b: (a: number) => void;
+ *   c: number;
+ * }
+ * type Example = PropertiesFrom<IExample>; // {c: number}
+ * ```
+ */
+export type RemoveFunctionsFrom<T> = { [P in keyof T as T[P] extends Function ? never : P]: T[P] };
+
+export type DeepPartialObj<T> = {
+    [P in keyof T]?: DeepPartial<T[P]>;
+} 
+export interface DeepPartialArray<A> extends Array<DeepPartial<A>> {}
+/**
+ * The same implementation from Matt Pocock video [https://www.youtube.com/watch?v=AhzjPAtzGTs](https://www.youtube.com/watch?v=AhzjPAtzGTs)
+ */
+export type DeepPartial<T> = T extends Function 
+    ? T 
+    : T extends Array<infer AItem> 
+    ? DeepPartialArray<AItem> 
+    : T extends object 
+    ? DeepPartialObj<T> 
+    : T | undefined;

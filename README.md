@@ -2,7 +2,6 @@ A `TypeScript` library, containing some very useful and advanced types for gener
 
 **Notes**:
 - This documentation is the same from my other library `trentim-react-sdk` on Storybook, which uses this library.
--  The documentation for the types `SetValuesByPath`, `SetValuesByPath` is not available yet.
 - To use this types, TypeScript version should at least be at version `4.2`
 
 
@@ -19,7 +18,8 @@ A `TypeScript` library, containing some very useful and advanced types for gener
 - [FunctionsFrom](#functionsfrom)
 - [Leaves](#leaves)
 - [SetValueByPath](#setvaluebypath)
-- [SetValuesByPath](#setvaluesbypath)
+- [RemoveFunctionsFrom](#removefunctionsfrom)
+- [DeepPartial](#deeppartial)
 
 ## Guide:
 #### RemoveIndex:
@@ -167,14 +167,24 @@ interface IExample {
 type Example = FunctionsFrom<IExample>; // {a: () => void, b: (a: number) => void}
 ```
 
+#### RemoveFunctionsFrom
+This type can be used to extract all the properties that are not functions from an interface or type definition (or inferred type from an object), excluding all the functions.
+
+* Example:*
+```ts
+interface IExample {
+  a: () => void;
+  b: (a: number) => void;
+  c: number;
+}
+type Example = PropertiesFrom<IExample>; // {c: number}
+```
+
 #### SetValueByPath
-Documentation not written yet.
-
-
-#### SetValuesByPath
-Documentation not written yet.
+This type can be used to set a value of a key inside an object, given it's path.
 
 ##### Thanks to:
 - [How to remove index signature using mapped types](https://stackoverflow.com/questions/51465182/how-to-remove-index-signature-using-mapped-types)
 - [Typescript: deep keyof of a nested object](https://stackoverflow.com/questions/58434389/typescript-deep-keyof-of-a-nested-object)
+- [DEEP PARTIAL in TypeScript - Advanced TypeScript](https://www.youtube.com/watch?v=AhzjPAtzGTs)
 - Official TypeScript team.
