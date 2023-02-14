@@ -190,3 +190,85 @@ export type DeepPartial<T> = T extends Function
     : T extends object 
     ? DeepPartialObj<T> 
     : T | undefined;
+
+/**Easier way to create non-labeled tuples when you need to repeat the same type multiple times.
+ * @example
+ * ```ts
+ * type MyTuple = Tuple<string, 3>; // [string, string, string]
+ * type MyTuple2 = Tuple<{name: string}, 2>; // [{name: string}, {name: string}]
+ * ```
+ */
+export type Tuple<T, N extends number> = N extends N ? number extends N ? T[] : _TupleOf<T, N, []> : never;
+type _TupleOf<T, N extends number, R extends unknown[]> = R['length'] extends N ? R : _TupleOf<T, N, [T, ...R]>;
+
+/**
+ * Use this type to create a new type that has the same properties as the given type, but only where the property name start's with the given string.
+ * @example
+ * ```ts
+ *  interface IExample {
+ *      address: string;
+ *      city: string;
+ *      at: Date;
+ *  }
+ * type Example = StartsWith<IExample, "a">; // {address: string, at: Date}
+ * type ExampleKeys = keyof StartsWith<IExample, "a">; // "address" | "at"
+ * type Example2 = StartsWith<IExample, "ad">; // {address: string}
+ * ```
+ */
+export type StartsWith<T, K extends string> = {
+  [P in keyof T as P extends `${K}${string}` ? P : never]: T[P]
+};
+
+/** 
+ * Use this type to create a new type that has the same properties as the given type, but only where the property name ends with the given string.
+ * @example
+ * ```ts
+ * interface IExample {
+ *     address: string;
+ *    city: string;
+ *   at: Date;
+ * }
+ * type Example = EndsWith<IExample, "ss">; // {address: string}
+ * type ExampleKeys = keyof EndsWith<IExample, "ss">; // "address"
+ * type Example2 = EndsWith<IExample, "y">; // {city: string}
+ * ```
+ * */
+export type EndsWith<T, K extends string> = {
+    [P in keyof T as P extends `${string}${K}` ? P : never]: T[P]
+}
+
+/**
+ * Use this type to create a new type that has the same properties as the given type, but only where the property name includes the given string.
+ * @example
+ * ```ts
+ *  interface IExample {
+ *     address: string;
+ *     city: string;
+ *     at: Date;
+ * }
+ * type Example = Includes<IExample, "it">; // {city: string}
+ * type ExampleKeys = keyof Includes<IExample, "it">; // "city"
+ * type Example2 = Includes<IExample, "dd">; // {address: string}
+ * ```
+ * */
+export type Includes<T, K extends string> = {
+    [P in keyof T as P extends `${string}${K}${string}` ? P : never]: T[P]
+};
+  
+/**
+ * Use this type to create a new type that has the same properties as the given type, but only where the property name does not include the given string.
+ * @example
+ * ```ts
+ * interface IExample {
+ *   address: string;
+ *   city: string;
+ *   at: Date;
+ * }
+ * type Example = NotIncludes<IExample, "it">; // {address: string, at: Date}
+ * type ExampleKeys = keyof NotIncludes<IExample, "it">; // "address" | "at"
+ * type Example2 = NotIncludes<IExample, "dd">; // {city: string, at: Date}
+ * ```
+ * */
+export type NotIncludes<T, K extends string> = {
+    [P in keyof T as P extends `${string}${K}${string}` ? never : P]: T[P]
+};
