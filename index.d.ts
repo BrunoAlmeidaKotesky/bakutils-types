@@ -303,10 +303,32 @@ export type Identity<T> = { [P in keyof T]: T[P] }
  * The `Identity` utility type makes TypeScript evaluate this object type immediately.
  *
  * @template T The original type
- * @template K The property key in T which should be replaced
+ * @template K The property key in T which the type should be replaced
  * @template TReplace The new type for the property K
  */
-export type Replace<T, K extends keyof T, TReplace> = Identity<Pick<T, Exclude<keyof T, K>> & { [P in K]: TReplace }>
+export type ReplaceKeyValue<T, K extends keyof T, TReplace> = Identity<Pick<T, Exclude<keyof T, K>> & { [P in K]: TReplace }>
+
+
+/**
+ * The `ReplaceKey` utility type can be used to change the key (property name) in an interface or type definition (or inferred type from an object) while keeping the same value type. 
+ *
+ * @template T The original type
+ * @template K The key that you want to replace
+ * @template KNew The new key that you want to use
+ * 
+ * @example
+ * 
+ * interface IExample {
+ *   name: string;
+ *   age: number;
+ * }
+ *
+ * type ReplacedKeyExample = ReplaceKey<IExample, 'name', 'firstName'>;
+ * // ReplacedKeyExample = { firstName: string; age: number; }
+ */
+ export type ReplaceKey<T, K extends keyof T, NewKey extends string> = Identity<
+    Pick<T, Exclude<keyof T, K>> & { [P in NewKey]: T[K] }
+>;
 
 /**
  * Use this type to create a new type that has the same properties as the given type, but only where the property name does not start with the given string.

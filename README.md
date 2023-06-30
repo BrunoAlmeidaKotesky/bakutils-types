@@ -20,16 +20,18 @@ A `TypeScript` library, containing some very useful and advanced types for gener
     - [FunctionsFrom](#functionsfrom)
     - [RemoveFunctionsFrom](#removefunctionsfrom)
     - [SetValueByPath](#setvaluebypath)
-    - [KnownKeys](#knownkeys)
-    - [Tuple](#tuple)
-    - [OptionalTuple](#optionaltuple)
-    - [Identity](#identity)
-    - [StartsWith](#startswith)
-    - [EndsWith](#endswith)
-    - [Includes](#includes)
-    - [NotStartsWith](#notstartswith)
-    - [NotEndsWith](#notendswith)
-    - [Replace](#replace)
+    - [KnownKeys:](#knownkeys)
+  - [Tuple:](#tuple)
+  - [OptionalTuple:](#optionaltuple)
+  - [Identity:](#identity)
+  - [ReplaceKeyValue:](#replacekeyvalue)
+  - [ReplaceKey:](#replacekey)
+  - [StartsWith:](#startswith)
+  - [EndsWith:](#endswith)
+  - [Includes:](#includes)
+  - [NotStartsWith:](#notstartswith)
+  - [NotEndsWith:](#notendswith)
+      - [Thanks to:](#thanks-to)
 
 
 ## Guide:
@@ -227,15 +229,27 @@ The Identity type simply returns the type that is passed to it. It can be used w
 type ExampleIdentity = Identity<number>; // number
 ```
 
-### Replace:
-The Replace type can be used to replace a property by another property, given it's name. It's useful when you need to replace a property inside an interface or type definition, but you don't want to change the type of the property.
+### ReplaceKeyValue:
+The ReplaceKeyValue type can be used to replace a property by another property, given it's name. It's useful when you need to replace a property inside an interface or type definition, but you don't want to change the type of the property.
 
 *Example:*
 ```ts dark
 interface IExample {
     foo: number;
 }
-type ExampleReplace = Replace<IExample, 'foo', 'bar'>; 
+type ExampleReplace = Replace<IExample, 'foo', string>; 
+// { foo: string }
+```
+
+### ReplaceKey:
+Instead of changing the value of a property, it removes the property and adds a new one with the same type.
+
+*Example:*
+```ts dark
+interface IExample {
+    foo: number;
+}
+type ExampleReplace = ReplaceKey<IExample, 'foo', 'bar'>;
 // { bar: number }
 ```
 
