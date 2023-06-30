@@ -10,16 +10,27 @@ A `TypeScript` library, containing some very useful and advanced types for gener
 `npm install --save bakutils-types` or `yarn add bakutils-types`.
 
 ##### Available types:
-- [RemoveIndex](#removeindex)
-- [Join](#join)
-- [Paths](#paths)
-- [TypeFrom](#typefrom)
-- [Split](#split)
-- [FunctionsFrom](#functionsfrom)
-- [Leaves](#leaves)
-- [SetValueByPath](#setvaluebypath)
-- [RemoveFunctionsFrom](#removefunctionsfrom)
-- [DeepPartial](#deeppartial)
+- [Guide:](#guide)
+    - [RemoveIndex:](#removeindex)
+    - [Join:](#join)
+    - [Paths:](#paths)
+    - [Leaves](#leaves)
+    - [TypeFrom:](#typefrom)
+    - [Split](#split)
+    - [FunctionsFrom](#functionsfrom)
+    - [RemoveFunctionsFrom](#removefunctionsfrom)
+    - [SetValueByPath](#setvaluebypath)
+    - [KnownKeys](#knownkeys)
+    - [Tuple](#tuple)
+    - [OptionalTuple](#optionaltuple)
+    - [Identity](#identity)
+    - [StartsWith](#startswith)
+    - [EndsWith](#endswith)
+    - [Includes](#includes)
+    - [NotStartsWith](#notstartswith)
+    - [NotEndsWith](#notendswith)
+    - [Replace](#replace)
+
 
 ## Guide:
 #### RemoveIndex:
@@ -183,8 +194,99 @@ type Example = PropertiesFrom<IExample>; // {c: number}
 #### SetValueByPath
 This type can be used to set a value of a key inside an object, given it's path.
 
+#### KnownKeys:
+
+The `KnownKeys` type can be used to extract only the known keys of a type. It's useful when working with types that may contain index signatures, and you want to exclude those index signatures from the keys.
+
+*Example:*
+```ts dark
+interface IExample {
+    a: number;
+    b: string;
+    [key: string]: number | string;
+}
+type ExampleKnownKeys = KnownKeys<IExample>; // "a" | "b"
+```
+
+### Tuple:
+The Tuple type generates a tuple of a specific length, filled with a specific type.
+
+*Example:*
+```ts dark
+type ExampleTuple = Tuple<number, 3>; // [number, number, number]
+```
+
+### OptionalTuple:
+Same as [Tuple](#tuple), but every item inside the tuple is optional.
+
+### Identity:
+The Identity type simply returns the type that is passed to it. It can be used when you need to reference a type in a context where TypeScript expects a value, this type is very can be used on very specific scenarios, but it's used internally on `Replace` type.
+
+*Example:*
+```ts dark
+type ExampleIdentity = Identity<number>; // number
+```
+
+### Replace:
+The Replace type can be used to replace a property by another property, given it's name. It's useful when you need to replace a property inside an interface or type definition, but you don't want to change the type of the property.
+
+*Example:*
+```ts dark
+interface IExample {
+    foo: number;
+}
+type ExampleReplace = Replace<IExample, 'foo', 'bar'>; 
+// { bar: number }
+```
+
+### StartsWith:
+The StartsWith type can be used to extract all keys of a type that start with a certain string.
+
+*Example:*
+```ts dark
+type ExampleStartsWith = StartsWith<{ad: number, dc: number}, 'a'>;
+// { ad: number }
+```
+
+### EndsWith:
+The EndsWith type can be used to extract all keys of a type that end with a certain string.
+
+*Example:*
+```ts dark
+type ExampleEndsWith = EndsWith<{ad: number, dc: number}, 'c'>;
+// { dc: number }
+```
+
+### Includes: 
+The Includes type can be used to extract all keys of a type that includes a certain string.
+
+*Example:*
+```ts dark
+type ExampleIncludes = Includes<{ad: number, dc: number, v: number}, 'd'>;
+// { ad: number, dc: number }
+```
+
+### NotStartsWith:
+The NotStartsWith type can be used to exclude all keys of a type that start with a certain string.
+
+*Example:*
+```ts dark
+type ExampleNotStartsWith = NotStartsWith<{ad: number, dc: number}, 'a'>;
+// { dc: number }
+```
+
+### NotEndsWith:
+The NotEndsWith type can be used to exclude all keys of a type that end with a certain string.
+
+*Example:*
+```ts dark
+type ExampleNotEndsWith = NotEndsWith<{ad: number, dc: number}, 'c'>;
+// { ad: number }
+```
+
 ##### Thanks to:
 - [How to remove index signature using mapped types](https://stackoverflow.com/questions/51465182/how-to-remove-index-signature-using-mapped-types)
 - [Typescript: deep keyof of a nested object](https://stackoverflow.com/questions/58434389/typescript-deep-keyof-of-a-nested-object)
 - [DEEP PARTIAL in TypeScript - Advanced TypeScript](https://www.youtube.com/watch?v=AhzjPAtzGTs)
 - Official TypeScript team.
+- ChatGPT

@@ -17,7 +17,11 @@ export type RemoveIndex<T> = {
     [P in keyof T as string extends P ? never : number extends P ? never : P]: T[P]
 };
 
-//https://stackoverflow.com/questions/51465182/how-to-remove-index-signature-using-mapped-types
+/**
+ * Represents all the known keys of an object type `T`. This is useful when 
+ * you want to work with keys that are explicitly defined in the type, rather 
+ * than inferred keys.
+ */
 export type KnownKeys<T> = {
     [K in keyof T]: string extends K ? never : number extends K ? never : K
 } extends { [_ in keyof T]: infer U } ? U : never;
@@ -38,7 +42,6 @@ export type Join<K, P> = K extends string | number ?
     : never : never;
 /**This is an internal type for controlling the `Paths` type. It has no use besides that. */
 export type Prev = [never, 0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16, 17, 18, ...0[]]
-
 /**
  * It can be used to recursively create a known collection of paths from a given object.
  * 
@@ -131,7 +134,7 @@ export type TypeFrom<T, Path extends string = Paths<T, 4>> =
     unknown;
 
 /**
- * This type can be used on functions that deeply access and modify an object value, given it's path.
+ * This type represents the value returned by a previous function, to be set in an object of type `Obj`.
  */
 export type SetValueByPath<ReturnValue, Obj extends Record<any, any>> = <T = Obj, Path extends string = Paths<T, 4>> (path: Path, value: TypeFrom<T, Path>, fromObject?: Obj) => ReturnValue;
 
@@ -176,19 +179,21 @@ export type FunctionsFrom<T> = { [P in keyof T as T[P] extends Function ? P : ne
  */
 export type RemoveFunctionsFrom<T> = { [P in keyof T as T[P] extends Function ? never : P]: T[P] };
 
+
 export type DeepPartialObj<T> = {
     [P in keyof T]?: DeepPartial<T[P]>;
-} 
-export interface DeepPartialArray<A> extends Array<DeepPartial<A>> {}
-/**
+}
+export interface DeepPartialArray<A> extends Array<DeepPartial<A>> { }
+/** Recursively maps each element of `T` to a partial version of itself.
+ * 
  * The same implementation from Matt Pocock video [https://www.youtube.com/watch?v=AhzjPAtzGTs](https://www.youtube.com/watch?v=AhzjPAtzGTs)
  */
-export type DeepPartial<T> = T extends Function 
-    ? T 
-    : T extends Array<infer AItem> 
-    ? DeepPartialArray<AItem> 
-    : T extends object 
-    ? DeepPartialObj<T> 
+export type DeepPartial<T> = T extends Function
+    ? T
+    : T extends Array<infer AItem>
+    ? DeepPartialArray<AItem>
+    : T extends object
+    ? DeepPartialObj<T>
     : T | undefined;
 
 /**Easier way to create non-labeled tuples when you need to repeat the same type multiple times.
@@ -200,6 +205,11 @@ export type DeepPartial<T> = T extends Function
  */
 export type Tuple<T, N extends number> = N extends N ? number extends N ? T[] : _TupleOf<T, N, []> : never;
 type _TupleOf<T, N extends number, R extends unknown[]> = R['length'] extends N ? R : _TupleOf<T, N, [T, ...R]>;
+
+/**
+ * Same as `Tuple` type, but all the elements are optional.
+ */
+export type OptionalTuple<T, N extends number> = Partial<Tuple<T, N>>;
 
 /**
  * Use this type to create a new type that has the same properties as the given type, but only where the property name start's with the given string.
@@ -216,7 +226,7 @@ type _TupleOf<T, N extends number, R extends unknown[]> = R['length'] extends N 
  * ```
  */
 export type StartsWith<T, K extends string> = {
-  [P in keyof T as P extends `${K}${string}` ? P : never]: T[P]
+    [P in keyof T as P extends `${K}${string}` ? P : never]: T[P]
 };
 
 /** 
@@ -254,7 +264,7 @@ export type EndsWith<T, K extends string> = {
 export type Includes<T, K extends string> = {
     [P in keyof T as P extends `${string}${K}${string}` ? P : never]: T[P]
 };
-  
+
 /**
  * Use this type to create a new type that has the same properties as the given type, but only where the property name does not include the given string.
  * @example
@@ -271,4 +281,65 @@ export type Includes<T, K extends string> = {
  * */
 export type NotIncludes<T, K extends string> = {
     [P in keyof T as P extends `${string}${K}${string}` ? never : P]: T[P]
+};
+
+/**
+ * Identity utility type. This type receives `T` and returns the exact same type.
+ * It is mainly used to force TypeScript to evaluate a type.
+ *
+ * @template T The original type
+ */
+export type Identity<T> = { [P in keyof T]: T[P] }
+
+/**
+ * Replace utility type. This type takes three type parameters: 
+ * `T` (an object), `K` (a key in `T`), and `TReplace` (the new type for the property `K` in `T`).
+ * 
+ * The `Replace` type uses the `Identity` utility type to force TypeScript to 
+ * evaluate the object type with the replaced property type. 
+ * 
+ * First, it picks all properties from `T` except `K` using `Pick<T, Exclude<keyof T, K>>`. 
+ * Then, it adds the new property type for `K` using `{ [P in K] : TReplace }`. 
+ * The `Identity` utility type makes TypeScript evaluate this object type immediately.
+ *
+ * @template T The original type
+ * @template K The property key in T which should be replaced
+ * @template TReplace The new type for the property K
+ */
+export type Replace<T, K extends keyof T, TReplace> = Identity<Pick<T, Exclude<keyof T, K>> & { [P in K]: TReplace }>
+
+/**
+ * Use this type to create a new type that has the same properties as the given type, but only where the property name does not start with the given string.
+ * @example
+ * ```ts
+ * interface IExample {
+ *   apple: string;
+ *   banana: string;
+ *   berry: string;
+ *   cherry: string;
+ * }
+ * type Example = NotStartsWith<IExample, "b">; // {apple: string, cherry: string}
+ * type ExampleKeys = keyof NotStartsWith<IExample, "b">; // "apple" | "cherry"
+ * ```
+ * */
+export type NotStartsWith<T, K extends string> = {
+    [P in keyof T as P extends `${K}${string}` ? never : P]: T[P]
+};
+
+/**
+ * Use this type to create a new type that has the same properties as the given type, but only where the property name does not end with the given string.
+ * @example
+ * ```ts
+ * interface IExample {
+ *   name: string;
+ *   game: string;
+ *   fame: string;
+ *   lane: number;
+ * }
+ * type Example = NotEndsWith<IExample, "me">; // {name: string, lane: number}
+ * type ExampleKeys = keyof NotEndsWith<IExample, "me">; // "name" | "lane"
+ * ```
+ * */
+export type NotEndsWith<T, K extends string> = {
+    [P in keyof T as P extends `${string}${K}` ? never : P]: T[P]
 };
