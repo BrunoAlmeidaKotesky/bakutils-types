@@ -31,9 +31,11 @@ A `TypeScript` library, containing some very useful and advanced types for gener
   - [Includes:](#includes)
   - [NotStartsWith:](#notstartswith)
   - [NotEndsWith:](#notendswith)
+  - [MatchKeys:](#matchkeys)
+  - [Match:](#match)
+  - [DifferKeys:](#differkeys)
+  - [Differ:](#differ)
       - [Thanks to:](#thanks-to)
-
-
 ## Guide:
 #### RemoveIndex:
 
@@ -296,6 +298,49 @@ The NotEndsWith type can be used to exclude all keys of a type that end with a c
 ```ts dark
 type ExampleNotEndsWith = NotEndsWith<{ad: number, dc: number}, 'c'>;
 // { ad: number }
+```
+
+### MatchKeys: 
+MatchKeys is a utility type which compares two types (T and U) 
+and returns a union of keys that exist and match in both types.
+
+*Example:*
+```ts dark
+type A = { id: number; name: string; };
+type B = { id: number; email: string; };
+type CommonKeys = MatchKeys<A, B>;  // "id"
+```
+
+### Match:
+Match is a utility type which compares two types (T and U)
+and returns a new type with properties that exist and match in both types.
+
+*Example:*
+```ts dark
+type A = { id: number; name: string; };
+type B = { id: number; email: string; };
+type CommonProperties = Match<A, B>;  // { id: number; }
+```
+
+### DifferKeys:
+DifferKeys is a utility type that takes in two types (T and U)
+and returns a union of keys that exist in T but not in U.
+
+*Example:*
+```ts dark
+type A = { id: number; name: string; };
+type B = { id: number; email: string; };
+type DiffKeys = DifferKeys<A, B>;  // "name"
+```
+
+### Differ:
+Differ is a utility type that takes in two types (T and U) and returns a new type with properties that exist in T but not in U.
+
+*Example:*
+```ts dark
+type A = { id: number; name: string; };
+type B = { id: number; email: string; };
+type DiffProperties = Differ<A, B>;  // { name: string; }
 ```
 
 ##### Thanks to:

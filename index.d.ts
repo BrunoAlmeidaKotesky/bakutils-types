@@ -365,3 +365,58 @@ export type NotStartsWith<T, K extends string> = {
 export type NotEndsWith<T, K extends string> = {
     [P in keyof T as P extends `${string}${K}` ? never : P]: T[P]
 };
+
+/**
+ * MatchKeys is a utility type which compares two types (T and U) 
+ * and returns a union of keys that exist and match in both types.
+ * 
+ * @example
+ * 
+ * type A = { id: number; name: string; };
+ * type B = { id: number; email: string; };
+ * type commonKeys = MatchKeys<A, B>;  // "id"
+ */
+ type MatchKeys<T, U> = {
+    [K in keyof T & keyof U]: T[K] extends U[K] ? U[K] extends T[K] ? K : never : never;
+}[keyof T & keyof U];
+
+/**
+ * Match is a utility type which compares two types (T and U)
+ * and returns a new type with properties that exist and match in both types.
+ * 
+ * @example
+ * 
+ * type A = { id: number; name: string; };
+ * type B = { id: number; email: string; };
+ * type commonProperties = Match<A, B>;  // { id: number; }
+ */
+type Match<T, U> = {
+    [K in keyof T & keyof U]: T[K] extends U[K] ? U[K] extends T[K] ? T[K] : never : never;
+}
+
+/**
+ * DifferKeys is a utility type that takes in two types (T and U)
+ * and returns a union of keys that exist in T but not in U.
+ * 
+ * @example
+ * 
+ * type A = { id: number; name: string; };
+ * type B = { id: number; email: string; };
+ * type differingKeys = DifferKeys<A, B>;  // "name"
+ */
+ type DifferKeys<T, U> = Exclude<keyof T, keyof U & keyof T>;
+
+ /**
+  * Differ is a utility type that takes in two types (T and U)
+  * and returns a new type with properties that exist in T but not in U.
+  * 
+  * @example
+  * 
+  * type A = { id: number; name: string; };
+  * type B = { id: number; email: string; };
+  * type differingProperties = Differ<A, B>;  // { name: string; }
+  */
+ type Differ<T, U> = {
+     [P in DifferKeys<T, U>]: T[P];
+ };
+ 
