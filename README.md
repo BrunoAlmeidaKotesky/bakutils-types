@@ -224,7 +224,7 @@ type ExampleTuple = Tuple<number, 3>; // [number, number, number]
 Same as [Tuple](#tuple), but every item inside the tuple is optional.
 
 ### Identity:
-The Identity type simply returns the type that is passed to it. It can be used when you need to reference a type in a context where TypeScript expects a value, this type is very can be used on very specific scenarios, but it's used internally on `Replace` type.
+The Identity type simply returns the type that is passed to it. It can be used when you need to reference a type in a context where TypeScript expects a value, this type can be used for very scenarios, but it's used internally on `Replace` type.
 
 *Example:*
 ```ts dark
@@ -232,7 +232,7 @@ type ExampleIdentity = Identity<number>; // number
 ```
 
 ### ReplaceKeyValue:
-The ReplaceKeyValue type can be used to replace a property by another property, given it's name. It's useful when you need to replace a property inside an interface or type definition, but you don't want to change the type of the property.
+The ReplaceKeyValue type can be used to replace a property type by another type, given it's name.
 
 *Example:*
 ```ts dark
