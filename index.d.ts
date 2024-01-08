@@ -326,7 +326,7 @@ export type ReplaceKeyValue<T, K extends keyof T, TReplace> = Identity<Pick<T, E
  * type ReplacedKeyExample = ReplaceKey<IExample, 'name', 'firstName'>;
  * // ReplacedKeyExample = { firstName: string; age: number; }
  */
- export type ReplaceKey<T, K extends keyof T, NewKey extends string> = Identity<
+export type ReplaceKey<T, K extends keyof T, NewKey extends string> = Identity<
     Pick<T, Exclude<keyof T, K>> & { [P in NewKey]: T[K] }
 >;
 
@@ -376,7 +376,7 @@ export type NotEndsWith<T, K extends string> = {
  * type B = { id: number; email: string; };
  * type commonKeys = MatchKeys<A, B>;  // "id"
  */
- type MatchKeys<T, U> = {
+type MatchKeys<T, U> = {
     [K in keyof T & keyof U]: T[K] extends U[K] ? U[K] extends T[K] ? K : never : never;
 }[keyof T & keyof U];
 
@@ -404,19 +404,41 @@ type Match<T, U> = {
  * type B = { id: number; email: string; };
  * type differingKeys = DifferKeys<A, B>;  // "name"
  */
- type DifferKeys<T, U> = Exclude<keyof T, keyof U & keyof T>;
+type DifferKeys<T, U> = Exclude<keyof T, keyof U & keyof T>;
 
- /**
-  * Differ is a utility type that takes in two types (T and U)
-  * and returns a new type with properties that exist in T but not in U.
-  * 
-  * @example
-  * 
-  * type A = { id: number; name: string; };
-  * type B = { id: number; email: string; };
-  * type differingProperties = Differ<A, B>;  // { name: string; }
-  */
- type Differ<T, U> = {
-     [P in DifferKeys<T, U>]: T[P];
- };
- 
+/**
+ * Differ is a utility type that takes in two types (T and U)
+ * and returns a new type with properties that exist in T but not in U.
+ * 
+ * @example
+ * 
+ * type A = { id: number; name: string; };
+ * type B = { id: number; email: string; };
+ * type differingProperties = Differ<A, B>;  // { name: string; }
+ */
+type Differ<T, U> = {
+    [P in DifferKeys<T, U>]: T[P];
+};
+
+/**Remove a nullable property from an object type.
+ * 
+ * @example
+ * type A = { name: string; age?: number; other: string | undefined; };
+ * type B = NonNullableProperty<A, 'age'>; // { name: string; other: string | undefined; }
+ * type C = NonNullableProperty<A, 'other'>; // { name: string; age?: number; }
+ */
+export type NonNullableProperty<T, K extends keyof T> = T & { [P in K]-?: NonNullable<T[P]> };
+export type DeepNonNullableObj<T> = {
+    [P in keyof T]: DeepNonNullable<NonNullable<T[P]>>;
+};
+
+export interface DeepNonNullableArray<A> extends Array<DeepNonNullable<A>> { }
+
+/** Recursively maps each element of `T` to a non-nullable version of itself. */
+export type DeepNonNullable<T> = T extends Function
+    ? T
+    : T extends Array<infer AItem>
+    ? Array<DeepNonNullable<AItem>>
+    : T extends object
+    ? { [P in keyof T]: DeepNonNullable<NonNullable<T[P]>> }
+    : NonNullable<T>;
